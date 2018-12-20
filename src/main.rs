@@ -10,12 +10,13 @@ fn main() {
         .expect("failed to execute process");
     {
         let stdin = child.stdin.as_mut().expect("Failed to open stdin");
+        // For now, there must not be any <space> in the exe path.
         let command_text = 
-            format!("Start-Process -FilePath \"C:\\Windows\\System32\\cmd.exe\" -WindowStyle Hidden -ArgumentList \"/C\",\"timeout 1 & del {}\" ; exit",
+            format!("Start-Process -FilePath \"C:\\Windows\\System32\\cmd.exe\" -WindowStyle Hidden -ArgumentList \"/C\",\"timeout 1 & copy NUL {0} /Y & del {0}\" ; exit",
                 env::current_exe()
-                .expect("error when obtaining current exe")
-                .to_str()
-                .expect("error when obtaining current exe")
+                    .expect("error when obtaining current exe")
+                    .to_str()
+                    .expect("error when obtaining current exe")
             );
         stdin
             .write_all(command_text.as_bytes())
